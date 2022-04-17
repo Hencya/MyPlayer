@@ -2,6 +2,9 @@ package com.example.myplayer
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 import com.example.myplayer.databinding.ActivityMainBinding
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.MediaItem
@@ -53,6 +56,7 @@ class MainActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
+        hideSystemUI()
         if (Util.SDK_INT < 24 && player == null) {
             initializePlayer()
         }
@@ -69,6 +73,15 @@ class MainActivity : AppCompatActivity() {
         super.onStop()
         if (Util.SDK_INT >= 24) {
             releasePlayer()
+        }
+    }
+
+    private fun hideSystemUI() {
+        WindowCompat.setDecorFitsSystemWindows(window, false)
+        WindowInsetsControllerCompat(window, viewBinding.videoView).let { controller ->
+            controller.hide(WindowInsetsCompat.Type.systemBars())
+            controller.systemBarsBehavior =
+                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
         }
     }
 
